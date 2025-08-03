@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Food Group Sorting Adventure</title>
+  <style>
+    :root {
+      --primary: #6c5ce7;
+      --fruit: #e84393;
+      --veggie: #00b894;
+      --protein: #e17055;
+      --grain: #fdcb6e;
+      --dairy: #74b9ff;
+      --danger: #ff4757;
+      --success: #2ed573;
+      --dark: #2d3436;
+      --light: #f1f2f6;
+    }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #f9f9f9;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+      text-align: center;
+      color: var(--dark);
+      min-height: 100vh;
+    }
+    h1 {
+      color: var(--primary);
+      margin-bottom: 10px;
+      font-size: 2.2rem;
+    }
+    .subtitle {
+      color: #666;
+      margin-bottom: 30px;
+      font-size: 1.1rem;
+    }
+    .game-container {
+      background: white;
+      border-radius: 15px;
+      padding: 25px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+      max-width: 600px;
+      width: 100%;
+      position: relative;
+      overflow: hidden;
+    }
+    .score-panel {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      background: var(--primary);
+      color: white;
+      padding: 12px 20px;
+      border-radius: 10px;
+      font-weight: bold;
+    }
+    .timer-container {
+      width: 100%;
+      height: 10px;
+      background: #e0e0e0;
+      border-radius: 5px;
+      margin-bottom: 20px;
+      overflow: hidden;
+    }
+    .timer-bar {
+      height: 100%;
+      width: 100%;
+      background: var(--primary);
+      transition: width 1s linear;
+    }
+    .food-card {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      margin: 15px 0;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      border: 2px solid #e0e0e0;
+      transition: all 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+    .food-card::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 5px;
+      background: var(--primary);
+    }
+    .food-name {
+      font-weight: bold;
+      color: var(--dark);
+      font-size: 1.5rem;
+      margin-bottom: 8px;
+    }
+    .food-info {
+      color: #666;
+      font-size: 1rem;
+      margin-bottom: 12px;
+      min-height: 40px;
+    }
+    .category-options {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 15px;
+    }
+    .category-btn {
+      border: none;
+      padding: 12px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.9rem;
+    }
+    .category-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    .category-btn.fruit { background: var(--fruit); color: white; }
+    .category-btn.veggie { background: var(--veggie); color: white; }
+    .category-btn.protein { background: var(--protein); color: white; }
+    .category-btn.grain { background: var(--grain); color: var(--dark); }
+    .category-btn.dairy { background: var(--dairy); color: white; }
+    .feedback {
+      height: 50px;
+      margin: 15px 0;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      padding: 0 15px;
+      transition: all 0.3s;
+    }
+    .correct {
+      background: rgba(46, 213, 115, 0.2);
+      color: var(--success);
+      border-left: 4px solid var(--success);
+    }
+    .incorrect {
+      background: rgba(255, 71, 87, 0.2);
+      color: var(--danger);
+      border-left: 4px solid var(--danger);
+    }
+    button {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 12px 25px;
+      border-radius: 50px;
+      cursor: pointer;
+      font-size: 1rem;
+      margin-top: 20px;
+      transition: all 0.3s;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    button:hover {
+      background: #5a4bd6;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    button:active {
+      transform: translateY(0);
+    }
+    .difficulty-levels {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      justify-content: center;
+    }
+    .difficulty-btn {
+      padding: 8px 15px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-weight: bold;
+      background: #e0e0e0;
+      transition: all 0.2s;
+    }
+    .difficulty-btn.active {
+      background: var(--primary);
+      color: white;
+    }
+    .food-icon {
+      font-size: 3rem;
+      margin-bottom: 15px;
+      transition: all 0.3s;
+    }
+    .fruit { color: var(--fruit); }
+    .veggie { color: var(--veggie); }
+    .protein { color: var(--protein); }
+    .grain { color: var(--grain); }
+    .dairy { color: var(--dairy); }
+    .nutrition-tip {
+      margin-top: 20px;
+      padding: 15px;
+      background: #f8f9fa;
+      border-radius: 10px;
+      border-left: 4px solid var(--primary);
+    }
+    .tip-title {
+      font-weight: bold;
+      color: var(--primary);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .game-over {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.8);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.3s;
+    }
+    .game-over.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+    .game-over-content {
+      background: white;
+      padding: 30px;
+      border-radius: 15px;
+      max-width: 400px;
+      width: 90%;
+      text-align: center;
+      transform: translateY(20px);
+      transition: all 0.3s;
+    }
+    .game-over.active .game-over-content {
+      transform: translateY(0);
+    }
+    .game-over h2 {
+      color: var(--primary);
+      margin-bottom: 15px;
+    }
+    .final-score {
+      font-size: 1.5rem;
+      font-weight: bold;
+      margin: 15px 0;
+    }
+    .emoji-result {
+      font-size: 3rem;
+      margin-bottom: 15px;
+    }
+    .sound-toggle {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background: #f1f2f6;
+      border: none;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: var(--dark);
+    }
+    @media (max-width: 500px) {
+      .category-btn {
+        padding: 10px 15px;
+        font-size: 0.8rem;
+      }
+      .food-name {
+        font-size: 1.3rem;
+      }
+    }
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+  <button class="sound-toggle" id="sound-toggle">
+    <i class="fas fa-volume-up"></i>
+  </button>
+
+  <h1><i class="fas fa-utensils"></i> Food Group Sorting Adventure</h1>
+  <p class="subtitle">Match foods to their correct group and learn about nutrition!</p>
+  
+  <div class="game-container">
+    <div class="difficulty-levels">
+      <div class="difficulty-btn active" data-level="easy">Easy</div>
+      <div class="difficulty-btn" data-level="medium">Medium</div>
+      <div class="difficulty-btn" data-level="hard">Hard</div>
+    </div>
+    
+    <div class="score-panel">
+      <div><i class="fas fa-star"></i> Score: <span id="score">0</span></div>
+      <div><i class="fas fa-bolt"></i> Streak: <span id="streak">0</span>x</div>
+    </div>
+    
+    <div class="timer-container">
+      <div class="timer-bar" id="timer-bar"></div>
+    </div>
+    
+    <div class="feedback" id="feedback">
+      <i class="fas fa-info-circle"></i> Click the correct food group for each item!
+    </div>
+    
+    <div id="food-display">
+      <div class="food-card">
+        <div class="food-icon" id="food-icon"><i class="fas fa-question"></i></div>
+        <div class="food-name" id="food-name">Food Item</div>
+        <div class="food-info" id="food-info">Which food group does this belong to?</div>
+        
+        <div class="category-options">
+          <button class="category-btn fruit" data-category="fruit"><i class="fas fa-apple-alt"></i> Fruit</button>
+          <button class="category-btn veggie" data-category="veggie"><i class="fas fa-carrot"></i> Veggie</button>
+          <button class="category-btn protein" data-category="protein"><i class="fas fa-drumstick-bite"></i> Protein</button>
+          <button class="category-btn grain" data-category="grain"><i class="fas fa-bread-slice"></i> Grain</button>
+          <button class="category-btn dairy" data-category="dairy"><i class="fas fa-cheese"></i> Dairy</button>
+        </div>
+      </div>
+    </div>
+    
+    <div class="nutrition-tip">
+      <div class="tip-title"><i class="fas fa-lightbulb"></i> Nutrition Tip</div>
+      <p id="nutrition-tip">Eating a variety of foods helps you stay healthy!</p>
+    </div>
+    
+    <button id="start-btn"><i class="fas fa-play"></i> Start Game</button>
+  </div>
+
+  <div class="game-over" id="game-over">
+    <div class="game-over-content">
+      <div class="emoji-result" id="emoji-result">🎉</div>
+      <h2>Game Over!</h2>
+      <div class="final-score">Your Score: <span id="final-score">0</span></div>
+      <p id="result-message">Great job! Play again to beat your high score!</p>
+      <button id="restart-btn"><i class="fas fa-redo"></i> Play Again</button>
+    </div>
+  </div>
+
+  <audio id="correct-sound" src="https://assets.mixkit.co/sfx/preview/mixkit-correct-answer-tone-2870.mp3"></audio>
+  <audio id="wrong-sound" src="https://assets.mixkit.co/sfx/preview/mixkit-wrong-answer-fail-notification-946.mp3"></audio>
+  <audio id="game-over-sound" src="https://assets.mixkit.co/sfx/preview/mixkit-achievement-bell-600.mp3"></audio>
+
+  <script>
+    // Food Data (Fun & Educational)
+    const foods = [
+      { 
+        name: "Apple", 
+        category: "fruit",
+        icon: "fa-apple-alt",
+        info: "Rich in fiber and vitamin C. Great for snacks!",
+        tip: "Eating an apple a day can help digestion."
+      },
+      { 
+        name: "Broccoli", 
+        category: "veggie",
+        icon: "fa-tree",
+        info: "Packed with vitamins C, K, and fiber.",
+        tip: "Steaming broccoli preserves its nutrients best."
+      },
+      { 
+        name: "Chicken", 
+        category: "protein",
+        icon: "fa-drumstick-bite",
+        info: "High in protein and B vitamins.",
+        tip: "Grill or bake instead of frying for a healthier meal."
+      },
+      { 
+        name: "Bread", 
+        category: "grain",
+        icon: "fa-bread-slice",
+        info: "Provides carbohydrates for energy.",
+        tip: "Whole grain bread has more fiber than white bread."
+      },
+      { 
+        name: "Milk", 
+        category: "dairy",
+        icon: "fa-glass-whiskey",
+        info: "Good source of calcium and vitamin D.",
+        tip: "Low-fat milk has the same nutrients with less fat."
+      },
+      { 
+        name: "Banana", 
+        category: "fruit",
+        icon: "fa-banana",
+        info: "High in potassium and natural sugars.",
+        tip: "Great for a quick energy boost before exercise!"
+      },
+      { 
+        name: "Eggs", 
+        category: "protein",
+        icon: "fa-egg",
+        info: "Contains protein and healthy fats.",
+        tip: "Boiled eggs make a perfect protein-packed snack."
+      },
+      { 
+        name: "Tomato", 
+        category: "veggie",
+        icon: "fa-apple-alt", // Using apple as tomato icon
+        info: "Rich in lycopene, good for heart health.",
+        tip: "Cooking tomatoes increases lycopene absorption!"
+      },
+      { 
+        name: "Rice", 
+        category: "grain",
+        icon: "fa-bowl-food",
+        info: "Staple food providing energy.",
+        tip: "Brown rice has more nutrients than white rice."
+      },
+      { 
+        name: "Yogurt", 
+        category: "dairy",
+        icon: "fa-blender",
+        info: "Contains probiotics for gut health.",
+        tip: "Greek yogurt has more protein than regular yogurt."
+      }
+    ];
+
+    // Game State
+    let score = 0;
+    let streak = 0;
+    let timeLeft = 90;
+    let timerInterval;
+    let gameActive = false;
+    let currentFood = null;
+    let difficulty = "easy";
+    let soundOn = true;
+
+    // DOM Elements
+    const elements = {
+      score: document.getElementById('score'),
+      streak: document.getElementById('streak'),
+      timerBar: document.getElementById('timer-bar'),
+      feedback: document.getElementById('feedback'),
+      startBtn: document.getElementById('start-btn'),
+      foodName: document.getElementById('food-name'),
+      foodInfo: document.getElementById('food-info'),
+      foodIcon: document.getElementById('food-icon'),
+      nutritionTip: document.getElementById('nutrition-tip'),
+      categoryBtns: document.querySelectorAll('.category-btn'),
+      gameOver: document.getElementById('game-over'),
+      finalScore: document.getElementById('final-score'),
+      emojiResult: document.getElementById('emoji-result'),
+      resultMessage: document.getElementById('result-message'),
+      restartBtn: document.getElementById('restart-btn'),
+      soundToggle: document.getElementById('sound-toggle'),
+      correctSound: document.getElementById('correct-sound'),
+      wrongSound: document.getElementById('wrong-sound'),
+      gameOverSound: document.getElementById('game-over-sound')
+    };
+
+    // Initialize Game
+    function initGame() {
+      if (gameActive) {
+        if (confirm("Restart game?")) endGame();
+        else return;
+      }
+
+      score = 0;
+      streak = 0;
+      timeLeft = 90;
+      gameActive = true;
+      elements.score.textContent = score;
+      elements.streak.textContent = streak;
+      elements.timerBar.style.width = '100%';
+      elements.timerBar.style.backgroundColor = 'var(--primary)';
+      elements.feedback.innerHTML = `<i class="fas fa-info-circle"></i> Click the correct food group!`;
+      elements.feedback.style.color = "var(--primary)";
+      elements.feedback.className = "feedback";
+      elements.startBtn.innerHTML = `<i class="fas fa-redo"></i> Restart Game`;
+      elements.gameOver.classList.remove('active');
+      
+      // Start Timer
+      timerInterval = setInterval(updateTimer, 1000);
+      
+      // Load First Food
+      loadNewFood();
+      
+      // Set Up Category Buttons
+      elements.categoryBtns.forEach(btn => {
+        btn.addEventListener('click', () => checkAnswer(btn.dataset.category));
+      });
+    }
+
+    // Load a New Random Food
+    function loadNewFood() {
+      currentFood = foods[Math.floor(Math.random() * foods.length)];
+      elements.foodName.textContent = currentFood.name;
+      elements.foodInfo.textContent = "Which food group does this belong to?";
+      elements.foodIcon.innerHTML = `<i class="fas ${currentFood.icon} ${currentFood.category}"></i>`;
+      elements.nutritionTip.textContent = currentFood.tip;
+      
+      // Animate icon
+      elements.foodIcon.style.transform = 'scale(0)';
+      setTimeout(() => {
+        elements.foodIcon.style.transform = 'scale(1)';
+      }, 100);
+    }
+
+    // Check User's Answer
+    function checkAnswer(selectedCategory) {
+      if (!gameActive) return;
+      
+      if (selectedCategory === currentFood.category) {
+        // Correct Answer
+        score += 10 + (streak * 2); // Bonus points for streaks
+        streak++;
+        elements.feedback.innerHTML = `<i class="fas fa-check-circle"></i> Correct! +${10 + (streak * 2)} Points (Streak: ${streak}x)`;
+        elements.feedback.className = "feedback correct";
+        if (soundOn) elements.correctSound.play();
+        
+        // Show Food Info
+        elements.foodInfo.textContent = currentFood.info;
+        
+        // Load Next Food After Delay
+        setTimeout(loadNewFood, 1500);
+      } else {
+        // Wrong Answer
+        score = Math.max(0, score - 5);
+        streak = 0;
+        elements.feedback.innerHTML = `<i class="fas fa-times-circle"></i> Incorrect! -5 Points`;
+        elements.feedback.className = "feedback incorrect";
+        if (soundOn) elements.wrongSound.play();
+        
+        // Show Correct Info
+        elements.foodInfo.textContent = `This is a ${getCategoryName(currentFood.category)}. ${currentFood.info}`;
+        
+        // Load Next Food After Delay
+        setTimeout(loadNewFood, 2000);
+      }
+      
+      elements.score.textContent = score;
+      elements.streak.textContent = streak;
+    }
+
+    // Get Category Name
+    function getCategoryName(category) {
+      switch(category) {
+        case "fruit": return "Fruit";
+        case "veggie": return "Vegetable";
+        case "protein": return "Protein";
+        case "grain": return "Grain";
+        case "dairy": return "Dairy";
+        default: return "Unknown";
+      }
+    }
+
+    // Update Timer
+    function updateTimer() {
+      timeLeft--;
+      const percentage = (timeLeft / 90) * 100;
+      elements.timerBar.style.width = `${percentage}%`;
+      
+      if (timeLeft <= 10) {
+        elements.timerBar.style.backgroundColor = 'var(--danger)';
+      }
+      
+      if (timeLeft <= 0) {
+        endGame();
+      }
+    }
+
+    // End Game
+    function endGame() {
+      clearInterval(timerInterval);
+      gameActive = false;
+      
+      if (soundOn) elements.gameOverSound.play();
+      
+      elements.finalScore.textContent = score;
+      
+      let emoji, message;
+      if (score >= 100) {
+        emoji = "🏆";
+        message = "Amazing! You're a food group expert!";
+      } else if (score >= 60) {
+        emoji = "👍";
+        message = "Great job! You know your foods well!";
+      } else {
+        emoji = "🍎";
+        message = "Good effort! Keep learning about foods!";
+      }
+      
+      elements.emojiResult.textContent = emoji;
+      elements.resultMessage.textContent = message;
+      elements.gameOver.classList.add('active');
+    }
+
+    // Set Difficulty Level
+    document.querySelectorAll('.difficulty-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        document.querySelectorAll('.difficulty-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        difficulty = this.dataset.level;
+        
+        if (gameActive) {
+          if (confirm("Change difficulty? This will restart the game.")) {
+            initGame();
+          }
+        }
+      });
+    });
+
+    // Toggle Sound
+    elements.soundToggle.addEventListener('click', function() {
+      soundOn = !soundOn;
+      this.innerHTML = soundOn ? '<i class="fas fa-volume-up"></i>' : '<i class="fas fa-volume-mute"></i>';
+    });
+
+    // Start Game Button
+    elements.startBtn.addEventListener('click', initGame);
+    
+    // Restart Game Button
+    elements.restartBtn.addEventListener('click', initGame);
+  </script>
+</body>
+</html>

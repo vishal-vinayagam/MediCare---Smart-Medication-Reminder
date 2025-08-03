@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Medication Prescription Puzzle</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #4361ee;
+      --secondary: #3a0ca3;
+      --accent: #f72585;
+      --light: #f8f9fa;
+      --dark: #212529;
+      --success: #4cc9f0;
+      --warning: #f8961e;
+      --danger: #ef233c;
+      --border-radius: 12px;
+      --box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+      --transition: all 0.3s ease;
+    }
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #f5f7ff 0%, #eef1ff 100%);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 1rem;
+      color: var(--dark);
+    }
+    
+    header {
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+    
+    h1 {
+      color: var(--secondary);
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(to right, var(--primary), var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    
+    .subtitle {
+      color: var(--primary);
+      font-weight: 500;
+      opacity: 0.8;
+      font-size: 0.9rem;
+    }
+    
+    .game-container {
+      width: 100%;
+      max-width: 600px;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+    
+    .prescription-card {
+      background: white;
+      border-radius: var(--border-radius);
+      padding: 1.5rem;
+      box-shadow: var(--box-shadow);
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+      border-left: 4px solid var(--primary);
+    }
+    
+    .prescription-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M54 50.41a6 6 0 0 1-6 6H12a6 6 0 0 1-6-6V12a6 6 0 0 1 6-6h36a6 6 0 0 1 6 6v38.41z' fill='%234361ee' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
+      opacity: 0.5;
+    }
+    
+    .prescription-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      position: relative;
+    }
+    
+    .prescription-title {
+      font-size: 1.2rem;
+      color: var(--secondary);
+      font-weight: 600;
+    }
+    
+    .prescription-meta {
+      display: flex;
+      gap: 0.5rem;
+      font-size: 0.8rem;
+    }
+    
+    .doctor-info {
+      text-align: right;
+    }
+    
+    .doctor-name {
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+    
+    .doctor-specialty {
+      font-size: 0.8rem;
+      opacity: 0.7;
+    }
+    
+    .prescription-content {
+      min-height: 150px;
+      border: 2px dashed var(--primary);
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 1rem;
+      position: relative;
+      background-color: rgba(255, 255, 255, 0.7);
+      transition: var(--transition);
+    }
+    
+    .prescription-content.highlight {
+      border-color: var(--accent);
+      background-color: rgba(248, 37, 133, 0.05);
+    }
+    
+    .prescription-content.empty {
+      color: var(--primary);
+      font-weight: 500;
+      opacity: 0.7;
+      font-size: 0.9rem;
+      text-align: center;
+      padding: 1rem;
+    }
+    
+    .medication-item {
+      width: 100%;
+      padding: 0.8rem;
+      margin-bottom: 0.5rem;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      display: none;
+      animation: fadeIn 0.5s ease forwards;
+      font-size: 0.9rem;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .medication-name {
+      font-weight: 600;
+      color: var(--secondary);
+      margin-bottom: 0.25rem;
+      font-size: 1rem;
+    }
+    
+    .medication-details {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+      font-size: 0.8rem;
+    }
+    
+    .medication-detail {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+    
+    .medication-detail i {
+      color: var(--primary);
+      font-size: 0.8rem;
+    }
+    
+    .pieces-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+      justify-content: center;
+      margin-top: 0.5rem;
+    }
+    
+    .puzzle-piece {
+      width: 100px;
+      height: 100px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      color: white;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      border-radius: var(--border-radius);
+      cursor: grab;
+      font-weight: 600;
+      box-shadow: var(--box-shadow);
+      user-select: none;
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+      padding: 0.8rem;
+      text-align: center;
+      font-size: 0.9rem;
+    }
+    
+    .puzzle-piece::after {
+      content: "";
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(
+        to bottom right,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0) 45%,
+        rgba(255, 255, 255, 0.3) 50%,
+        rgba(255, 255, 255, 0) 55%,
+        rgba(255, 255, 255, 0) 100%
+      );
+      transform: rotate(30deg);
+      transition: var(--transition);
+    }
+    
+    .puzzle-piece:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+    }
+    
+    .puzzle-piece:hover::after {
+      left: 100%;
+    }
+    
+    .puzzle-piece.dragging {
+      opacity: 0.8;
+      transform: scale(0.95);
+    }
+    
+    .puzzle-piece.used {
+      opacity: 0;
+      visibility: hidden;
+      transform: scale(0);
+      pointer-events: none;
+    }
+    
+    .piece-icon {
+      font-size: 1.5rem;
+      margin-bottom: 0.3rem;
+    }
+    
+    .status-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 1rem;
+    }
+    
+    .progress-text {
+      font-weight: 600;
+      color: var(--secondary);
+      font-size: 0.9rem;
+    }
+    
+    .progress-bar {
+      height: 6px;
+      background: #e9ecef;
+      border-radius: 4px;
+      flex-grow: 1;
+      margin: 0 0.8rem;
+      overflow: hidden;
+    }
+    
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(to right, var(--success), var(--primary));
+      border-radius: 4px;
+      width: 0%;
+      transition: width 0.5s ease;
+    }
+    
+    .btn {
+      background: linear-gradient(to right, var(--primary), var(--secondary));
+      color: white;
+      border: none;
+      padding: 0.6rem 1.2rem;
+      border-radius: 50px;
+      font-family: 'Poppins';
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition);
+      box-shadow: 0 4px 12px rgba(67, 97, 238, 0.3);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.9rem;
+    }
+    
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(67, 97, 238, 0.4);
+    }
+    
+    .btn:active {
+      transform: translateY(0);
+    }
+    
+    .btn i {
+      font-size: 0.9rem;
+    }
+    
+    .message {
+      text-align: center;
+      margin-top: 1rem;
+      font-weight: 500;
+      min-height: 1.5rem;
+      font-size: 0.9rem;
+    }
+    
+    .success-message {
+      color: var(--success);
+    }
+    
+    .error-message {
+      color: var(--danger);
+    }
+    
+    .confetti {
+      position: fixed;
+      width: 8px;
+      height: 8px;
+      background-color: var(--accent);
+      opacity: 0;
+      animation: confetti-fall 3s ease-in-out forwards;
+      z-index: 1000;
+    }
+    
+    @keyframes confetti-fall {
+      0% {
+        transform: translateY(-100vh) rotate(0deg);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(100vh) rotate(360deg);
+        opacity: 0;
+      }
+    }
+    
+    .timer {
+      font-weight: 600;
+      color: var(--primary);
+      font-size: 0.9rem;
+    }
+    
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 1.6rem;
+      }
+      
+      .prescription-card {
+        padding: 1rem;
+      }
+      
+      .puzzle-piece {
+        width: 85px;
+        height: 85px;
+        font-size: 0.8rem;
+      }
+      
+      .piece-icon {
+        font-size: 1.2rem;
+      }
+      
+      .btn {
+        padding: 0.5rem 1rem;
+      }
+    }
+  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+  <header>
+    <h1>Medication Prescription Puzzle</h1>
+    <p class="subtitle">Drag the correct medications to complete the prescription</p>
+  </header>
+  
+  <div class="game-container">
+    <div class="prescription-card">
+      <div class="prescription-header">
+        <div>
+          <div class="prescription-title">Medical Prescription</div>
+          <div class="prescription-meta">
+            <span>Date: <span id="current-date"></span></span>
+            <span class="timer">Time: <span id="timer">00:00</span></span>
+          </div>
+        </div>
+        <div class="doctor-info">
+          <div class="doctor-name">Dr....</div>
+          <div class="doctor-specialty">General Practitioner</div>
+        </div>
+      </div>
+      
+      <div id="prescription-content" class="prescription-content empty">
+        <p>Drag medication cards here to complete the prescription</p>
+      </div>
+      
+      <div class="status-container">
+        <span class="progress-text">Progress: <span id="progress-text">0</span>/<span id="total-pieces">0</span></span>
+        <div class="progress-bar">
+          <div id="progress-fill" class="progress-fill"></div>
+        </div>
+        <button id="reset-btn" class="btn">
+          <i class="fas fa-redo"></i> Reset
+        </button>
+      </div>
+    </div>
+    
+    <div class="pieces-container" id="pieces-container"></div>
+    
+    <div id="message" class="message"></div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Game state
+      const gameState = {
+        medications: [
+          { 
+            name: "Paracetamol", 
+            dosage: "500mg", 
+            frequency: "Twice daily", 
+            purpose: "Pain relief and fever reduction",
+            icon: "fa-pills"
+          },
+          { 
+            name: "Amoxicillin", 
+            dosage: "250mg", 
+            frequency: "Three times daily", 
+            purpose: "Antibiotic for bacterial infection",
+            icon: "fa-bacteria"
+          },
+          { 
+            name: "Vitamin D", 
+            dosage: "1000IU", 
+            frequency: "Once daily", 
+            purpose: "Vitamin supplement",
+            icon: "fa-sun"
+          },
+          { 
+            name: "Ibuprofen", 
+            dosage: "200mg", 
+            frequency: "As needed", 
+            purpose: "Anti-inflammatory and pain relief",
+            icon: "fa-band-aid"
+          }
+        ],
+        placedPieces: 0,
+        startTime: null,
+        timerInterval: null,
+        totalPieces: 0
+      };
+
+      // DOM elements
+      const elements = {
+        prescriptionContent: document.getElementById('prescription-content'),
+        messageElement: document.getElementById('message'),
+        progressFill: document.getElementById('progress-fill'),
+        progressText: document.getElementById('progress-text'),
+        totalPiecesElement: document.getElementById('total-pieces'),
+        timerElement: document.getElementById('timer'),
+        currentDate: document.getElementById('current-date'),
+        piecesContainer: document.getElementById('pieces-container'),
+        resetBtn: document.getElementById('reset-btn')
+      };
+
+      // Initialize game
+      initGame();
+
+      // Set current date
+      function setCurrentDate() {
+        const options = { year: 'numeric', month: 'short', day: 'numeric' };
+        elements.currentDate.textContent = new Date().toLocaleDateString('en-US', options);
+      }
+
+      // Timer functions
+      function startTimer() {
+        gameState.startTime = new Date();
+        clearInterval(gameState.timerInterval);
+        gameState.timerInterval = setInterval(updateTimer, 1000);
+      }
+
+      function updateTimer() {
+        const now = new Date();
+        const diff = Math.floor((now - gameState.startTime) / 1000);
+        const minutes = Math.floor(diff / 60).toString().padStart(2, '0');
+        const seconds = (diff % 60).toString().padStart(2, '0');
+        elements.timerElement.textContent = `${minutes}:${seconds}`;
+      }
+
+      function stopTimer() {
+        clearInterval(gameState.timerInterval);
+      }
+
+      // Initialize game
+      function initGame() {
+        setCurrentDate();
+        gameState.totalPieces = gameState.medications.length;
+        elements.totalPiecesElement.textContent = gameState.totalPieces;
+        createPuzzle();
+        startTimer();
+      }
+
+      // Create puzzle
+      function createPuzzle() {
+        // Reset game state
+        gameState.placedPieces = 0;
+        elements.piecesContainer.innerHTML = '';
+        stopTimer();
+        startTimer();
+        
+        // Clear prescription content
+        elements.prescriptionContent.innerHTML = '<p>Drag medication cards here to complete the prescription</p>';
+        elements.prescriptionContent.className = 'prescription-content empty';
+        elements.messageElement.textContent = '';
+        elements.messageElement.className = 'message';
+        elements.progressFill.style.width = '0%';
+        elements.progressText.textContent = '0';
+
+        // Shuffle medications
+        const shuffledMedications = [...gameState.medications].sort(() => Math.random() - 0.5);
+        
+        // Create puzzle pieces
+        shuffledMedications.forEach((med, index) => {
+          const piece = document.createElement('div');
+          piece.className = 'puzzle-piece';
+          piece.dataset.index = index;
+          piece.draggable = true;
+          
+          piece.innerHTML = `
+            <div class="piece-icon"><i class="fas ${med.icon}"></i></div>
+            <div>${med.name}</div>
+          `;
+          
+          piece.addEventListener('dragstart', dragStart);
+          piece.addEventListener('dragend', dragEnd);
+          
+          elements.piecesContainer.appendChild(piece);
+        });
+        
+        // Set up drop zone
+        elements.prescriptionContent.addEventListener('dragover', dragOver);
+        elements.prescriptionContent.addEventListener('dragenter', dragEnter);
+        elements.prescriptionContent.addEventListener('dragleave', dragLeave);
+        elements.prescriptionContent.addEventListener('drop', drop);
+      }
+      
+      // Drag and drop functions
+      function dragStart(e) {
+        e.dataTransfer.setData('text/plain', e.target.dataset.index);
+        e.target.classList.add('dragging');
+        setTimeout(() => {
+          e.target.style.opacity = '0.4';
+        }, 0);
+      }
+      
+      function dragEnd(e) {
+        e.target.classList.remove('dragging');
+        e.target.style.opacity = '1';
+      }
+      
+      function dragOver(e) {
+        e.preventDefault();
+      }
+      
+      function dragEnter(e) {
+        e.preventDefault();
+        elements.prescriptionContent.classList.add('highlight');
+      }
+      
+      function dragLeave() {
+        elements.prescriptionContent.classList.remove('highlight');
+      }
+      
+      function drop(e) {
+        e.preventDefault();
+        elements.prescriptionContent.classList.remove('highlight');
+        
+        const index = e.dataTransfer.getData('text/plain');
+        const piece = document.querySelector(`.puzzle-piece[data-index="${index}"]`);
+        
+        if (piece && !piece.classList.contains('used')) {
+          const med = gameState.medications[index];
+          
+          // Mark piece as used
+          piece.classList.add('used');
+          
+          // Add medication to prescription
+          const medElement = document.createElement('div');
+          medElement.className = 'medication-item';
+          medElement.innerHTML = `
+            <div class="medication-name">${med.name}</div>
+            <div class="medication-details">
+              <div class="medication-detail">
+                <i class="fas fa-prescription-bottle-alt"></i>
+                <span>${med.dosage}</span>
+              </div>
+              <div class="medication-detail">
+                <i class="fas fa-clock"></i>
+                <span>${med.frequency}</span>
+              </div>
+              <div class="medication-detail">
+                <i class="fas fa-info-circle"></i>
+                <span>${med.purpose}</span>
+              </div>
+            </div>
+          `;
+          
+          // Remove empty state if first medication
+          if (elements.prescriptionContent.classList.contains('empty')) {
+            elements.prescriptionContent.innerHTML = '';
+            elements.prescriptionContent.classList.remove('empty');
+          }
+          
+          elements.prescriptionContent.appendChild(medElement);
+          
+          // Show animation
+          setTimeout(() => {
+            medElement.style.display = 'block';
+          }, 10);
+          
+          gameState.placedPieces++;
+          updateProgress();
+          
+          // Check if game is complete
+          if (gameState.placedPieces === gameState.totalPieces) {
+            gameComplete();
+          }
+        }
+      }
+      
+      function updateProgress() {
+        const percentage = (gameState.placedPieces / gameState.totalPieces) * 100;
+        elements.progressFill.style.width = `${percentage}%`;
+        elements.progressText.textContent = gameState.placedPieces;
+        
+        if (gameState.placedPieces > 0) {
+          elements.messageElement.textContent = `${gameState.placedPieces} of ${gameState.totalPieces} medications added`;
+        }
+      }
+      
+      function gameComplete() {
+        stopTimer();
+        elements.messageElement.textContent = `Prescription complete in ${elements.timerElement.textContent}! Excellent work!`;
+        elements.messageElement.classList.add('success-message');
+        
+        // Create celebration effect
+        createConfetti();
+      }
+      
+      function createConfetti() {
+        const colors = ['#4361ee', '#3a0ca3', '#f72585', '#4cc9f0', '#7209b7'];
+        
+        for (let i = 0; i < 50; i++) {
+          const confetti = document.createElement('div');
+          confetti.className = 'confetti';
+          confetti.style.left = `${Math.random() * 100}vw`;
+          confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+          confetti.style.width = `${Math.random() * 8 + 4}px`;
+          confetti.style.height = `${Math.random() * 8 + 4}px`;
+          confetti.style.animationDuration = `${Math.random() * 3 + 2}s`;
+          confetti.style.animationDelay = `${Math.random() * 0.5}s`;
+          document.body.appendChild(confetti);
+          
+          // Remove confetti after animation
+          setTimeout(() => {
+            confetti.remove();
+          }, 3000);
+        }
+      }
+      
+      // Reset button
+      elements.resetBtn.addEventListener('click', () => {
+        createPuzzle();
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediCare</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <a href="#" class="logo">
+            <img src="https://cdn-icons-png.flaticon.com/512/4476/4476876.png" alt="MediCare Logo">
+            <span class="logo-text">MediCare</span>
+        </a>
+        
+        <div class="nav-links">
+            <a href="#"><i class="fas fa-home"></i> Home</a>
+            <a href="#"><i class="fas fa-history"></i> History</a>
+            <a href="#"><i class="fas fa-chart-line"></i> Reports</a>
+            <a href="#games"><i class="fas fa-gamepad"></i> Games</a>
+        </div>
+        
+        <div class="user-profile">
+            <div class="profile-img" id="profileInitial">U</div>
+            <span class="profile-name" id="profileName">User</span>
+            <div class="profile-dropdown">
+                <a href="#" class="dropdown-item" id="profileBtn"><i class="fas fa-user"></i> Profile</a>
+                <a href="#" class="dropdown-item" id="settingsBtn"><i class="fas fa-cog"></i> Settings</a>
+                <a href="#" class="dropdown-item" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Sidebar -->
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <button class="time-btn" id="timeBtn">
+                    <i class="fas fa-clock"></i>
+                    <span id="currentTime">Loading...</span>
+                </button>
+                
+                <button class="add-btn" id="addReminderBtn">
+                    <i class="fas fa-plus"></i>
+                    Add New Reminder
+                </button>
+            </div>
+            
+            <div class="stats-container">
+                <h3 class="sidebar-title"><i class="fas fa-chart-pie"></i> Quick Stats</h3>
+                <div class="stats-grid">
+                    <div class="stat-item"  style="padding: 0.5rem;">
+                        <span class="stat-number" id="totalMeds">0</span>
+                        <span class="stat-label">Total Medi</span>
+                    </div>
+                    <div class="stat-item"  style="padding: 0.5rem;">
+                        <span class="stat-number" id="takenMeds">0</span>
+                        <span class="stat-label">Taken Today</span>
+                    </div>
+                    <div class="stat-item" style="padding: 0.5rem;">
+                        <span class="stat-number" id="pendingMeds">0</span>
+                        <span class="stat-label">Pending</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="upcoming-container">
+                <h3 class="sidebar-title"><i class="fas fa-bell"></i> Upcoming</h3>
+                <div class="upcoming-list" id="upcomingList">
+                    <div class="empty-state">
+                        <p>No upcoming medications</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="content-header">
+                <h1 class="content-title">Your Medication Schedule</h1>
+                <p class="content-subtitle">Manage and track your medications easily</p>
+            </div>
+            
+          
+<div class="reminders-container" id="remindersContainer">
+    <div class="empty-state">
+        <img src="https://cdn-icons-png.flaticon.com/512/4476/4476876.png" alt="No reminders">
+        <p>No reminders added yet. Click the button above to add your first reminder.</p>
+    </div>
+</div>
+<div class="content-header" style="margin-top: 2rem; margin-bottom: 1.5rem;" >
+                <h1 class="content-title">Play Zone</h1>
+<p class="content-subtitle">Relax and enjoy interactive games</p>
+            </div>
+
+<section id="games">
+  <div class="games-grid">
+    <!-- Memory Game -->
+    <div class="game-card">
+      <img src="games\assets\medicen.png" alt="Memory Game" class="game-image">
+      <div class="game-content">
+        <h3 class="game-title">Memory Match</h3>
+        <p class="game-desc">Match medication pairs to boost your memory</p>
+        <button class="play-btn" data-game="memory"><i class="fas fa-play"></i> Play Now</button>
+      </div>
+    </div>
+    <!-- Pill Sorting Game -->
+    <div class="game-card">
+      <img src="https://img.freepik.com/free-vector/quiz-neon-sign_1262-19629.jpg" alt="Quiz Game" class="game-image">
+      <div class="game-content">
+        <h3 class="game-title">Category Crunch</h3>
+        <p class="game-desc">Match Foods, Learn Nutrition!</p>
+        <button class="play-btn" data-game="pills"><i class="fas fa-play"></i> Play Now</button>
+      </div>
+    </div>
+    <!-- Puzzle Game -->
+    <div class="game-card">
+      <img src="https://img.freepik.com/free-vector/hand-drawn-puzzle-pattern_23-2149072407.jpg" alt="Puzzle Game" class="game-image">
+      <div class="game-content">
+        <h3 class="game-title">Prescription Puzzle</h3>
+        <p class="game-desc">Drag-and-drop to complete medication puzzles</p>
+        <button class="play-btn" data-game="puzzle"><i class="fas fa-play"></i> Play Now</button>
+      </div>
+    </div>
+    <!-- Food Game -->
+    <div class="game-card">
+      <img src="games\assets\Healthy Food Catch.jpg" alt="Bird Game" class="game-image">
+      <div class="game-content">
+        <h3 class="game-title">Healthy Food Catch</h3>
+        <p class="game-desc">Catch healthy foods while avoiding junk</p>
+        <button class="play-btn" data-game="food"><i class="fas fa-play"></i> Play Now</button>
+      </div>
+    </div>
+  </div>
+</section>
+        </div>
+    </div>
+
+    <!-- Add Reminder Modal -->
+    <div class="modal-overlay" id="reminderModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title"><i class="fas fa-pills"></i> <span id="modalReminderTitle">Add New Medication</span></h3>
+                <button class="close-btn" id="closeReminderModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="reminderForm">
+                    <div class="form-group">
+                        <label for="medicineName" class="form-label">Medicine Name*</label>
+                        <input type="text" id="medicineName" class="form-input" placeholder="e.g., Paracetamol 500mg" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="dosage" class="form-label">Dosage*</label>
+                        <input type="text" id="dosage" class="form-input" placeholder="e.g., 1 tablet" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="reminderTime" class="form-label">Time*</label>
+                        <input type="time" id="reminderTime" class="form-input" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="frequency" class="form-label">Frequency*</label>
+                        <select id="frequency" class="form-input form-select" required>
+                            <option value="daily">Daily</option>
+                            <option value="weekly">Weekly</option>
+                            <option value="monthly">Monthly</option>
+                            <option value="as_needed">As Needed</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="instructions" class="form-label">Special Instructions</label>
+                        <textarea id="instructions" class="form-input form-textarea" rows="3" placeholder="e.g., Take after food, avoid alcohol"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="action-btn delete-btn" id="cancelReminder"><i class="fas fa-times"></i> Cancel</button>
+                <button class="action-btn taken-btn" id="saveReminder"><i class="fas fa-save"></i> <span id="saveReminderText">Save Medication</span></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Profile Modal -->
+    <div class="modal-overlay" id="profileModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title"><i class="fas fa-user-circle"></i> Your Profile</h3>
+                <button class="close-btn" id="closeProfileModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="profileForm">
+                    <div class="form-group">
+                        <label for="profileNameInput" class="form-label">Full Name*</label>
+                        <input type="text" id="profileNameInput" class="form-input" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="profileAge" class="form-label">Age*</label>
+                        <input type="number" id="profileAge" class="form-input" min="1" max="120" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="profileEmail" class="form-label">Email*</label>
+                        <input type="email" id="profileEmail" class="form-input" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="profilePhone" class="form-label">Mobile Number*</label>
+                        <input type="tel" id="profilePhone" class="form-input" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="profileAltPhone" class="form-label">Emergency Contact</label>
+                        <input type="tel" id="profileAltPhone" class="form-input">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="profileNotifications" class="form-label">Enable Notifications</label>
+                        <label class="switch">
+                            <input type="checkbox" id="profileNotifications" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="action-btn delete-btn" id="cancelProfile"><i class="fas fa-times"></i> Cancel</button>
+                <button class="action-btn taken-btn" id="saveProfile"><i class="fas fa-save"></i> Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div class="modal-overlay" id="settingsModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title"><i class="fas fa-cog"></i> Settings</h3>
+                <button class="close-btn" id="closeSettingsModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="settingsForm">
+                    <div class="form-group">
+                        <label for="settingsTheme" class="form-label">Theme</label>
+                        <select id="settingsTheme" class="form-input form-select">
+                            <option value="light">Light</option>
+                            <option value="dark">Dark</option>
+                            <option value="system">System Default</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="settingsNotifications" class="form-label">Enable Notifications</label>
+                        <label class="switch">
+                            <input type="checkbox" id="settingsNotifications" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="settingsReminderSound" class="form-label">Reminder Sound</label>
+                        <select id="settingsReminderSound" class="form-input form-select">
+                            <option value="default">Casino jackpot alarm and coins</option>
+                            <option value="gentle">Urgent simple tone loop</option>
+                            <option value="alarm">Vintage telephone ringtone</option>
+                            <option value="none">No Sound</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="settingsLanguage" class="form-label">Language</label>
+                        <select id="settingsLanguage" class="form-input form-select">
+                            <option value="en">English</option>
+                            <option value="es">Spanish</option>
+                            <option value="fr">French</option>
+                            <option value="de">German</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="action-btn delete-btn" id="cancelSettings"><i class="fas fa-times"></i> Cancel</button>
+                <button class="action-btn taken-btn" id="saveSettings"><i class="fas fa-save"></i> Save Settings</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Game Modal -->
+    <div class="modal-overlay" id="gameModal">
+        <div class="modal game-modal">
+            <div class="modal-header">
+                <h3 class="modal-title"><i class="fas fa-gamepad"></i> <span id="gameModalTitle">Game</span></h3>
+                <button class="close-btn" id="closeGameModal">&times;</button>
+            </div>
+            <iframe class="game-iframe" id="gameIframe" allowfullscreen></iframe>
+        </div>
+    </div>
+
+    <!-- Alert Notification -->
+    <div class="alert-notification" id="alertNotification">
+        <i class="fas fa-bell alert-icon"></i>
+        <div class="alert-content">
+            <div class="alert-title" id="alertTitle">Medication Reminder</div>
+            <div class="alert-message" id="alertMessage">It's time to take your medicine!</div>
+        </div>
+        <button class="close-alert" id="closeAlert">&times;</button>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-logo">
+                <img src="https://cdn-icons-png.flaticon.com/512/4476/4476876.png" alt="MediCare Logo">
+                <span class="footer-logo-text">MediCare</span>
+            </div>
+            
+            <div class="footer-links">
+                <a href="#" class="footer-link">About Us</a>
+                <a href="#" class="footer-link">Contact</a>
+                <a href="#" class="footer-link">Privacy Policy</a>
+                <a href="#" class="footer-link">Terms of Service</a>
+                <a href="#" class="footer-link">FAQ</a>
+                <a href="#" class="footer-link">Support</a>
+            </div>
+            
+            <div class="social-links">
+                <a href="https://www.instagram.com/mr_vishal_0ff" class="social-link"><i class="fab fa-facebook-f"></i></a>
+                <a href="https://x.com/Vishal122005" class="social-link"><i class="fab fa-twitter"></i></a>
+                <a href="https://www.instagram.com/mr_vishal_0ff" class="social-link"><i class="fab fa-instagram"></i></a>
+                <a href="https://www.linkedin.com/in/vishal-v-053a9128b/" class="social-link"><i class="fab fa-linkedin-in"></i></a>
+            </div>
+            
+            <p class="copyright">© 2025 MediCare. All rights reserved. Helping you stay healthy every day.</p>
+        </div>
+    </footer>
+
+   
+   <script src="script.js"></script>
+   
+</body>
+</html>
