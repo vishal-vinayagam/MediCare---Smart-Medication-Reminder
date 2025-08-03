@@ -1,7 +1,5 @@
 <img width="1895" height="908" alt="home" src="https://github.com/user-attachments/assets/dbb63324-448a-426c-82f4-4b24077c83d0" /># MediCare - Smart Medication Reminder 💊
 
-![MediCare Screenshot](https://cdn-icons-png.flaticon.com/512/4476/4476876.png)
-
 A *responsive web application* to manage medications with reminders, track adherence, and play health-focused mini-games.
 
 ## Features ✨
